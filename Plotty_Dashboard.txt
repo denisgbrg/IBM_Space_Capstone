@@ -63,10 +63,13 @@ app.layout = html.Div(children=[html.H1('SpaceX Launch Records Dashboard',
                Input(component_id='site-dropdown', component_property='value'))
 def get_graph(launch_site):    
     print ("Graph input:", launch_site)
-    results =  (spacex_df[spacex_df['Launch Site']==launch_site]).groupby('Mission Outcome').size()    
+    if (launch_site != 'ALL'):
+        results =  (spacex_df[spacex_df['Launch Site']==launch_site]).groupby('Mission Outcome').size().reset_index(name='Cnt')
+    else:
+        results =  spacex_df.groupby('Mission Outcome').size().reset_index(name='Cnt')
     print(results)
-
-    fig = px.pie(spacex_df,values=[1,2,3],names=["a","b","c"])
+    print (type(results))
+    fig = px.pie(results,values='Cnt',names='Mission Outcome')
     return fig
 
 
